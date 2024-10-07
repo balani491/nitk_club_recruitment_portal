@@ -1,0 +1,30 @@
+{
+    "ADMIN": {
+        "permissions": [
+            "createPreferenceForm",
+            "viewClubs",
+            "manageUsers"
+        ]
+    },
+    "CONVENOR": {
+        "permissions": [
+            "registerClub",
+            "addAnnouncement",
+            "addRecruitmentDetails",
+            "addRecruitmentRound",
+            "addFinalAnnouncement",
+            "createSIGprefForm"
+        ]
+    },
+    "STUDENT": {
+        "permissions": [
+            "viewClubs",
+            "registerForClub",
+            "viewAnnouncements",
+            "viewRecruitmentDetails",
+            "viewRecruitmentRound",
+            "fillSIGprefForm",
+            "fillPreferenceForm"
+        ]
+    }
+}

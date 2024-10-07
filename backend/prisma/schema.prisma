@@ -1,0 +1,175 @@
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")  
+// }
+
+// model User {
+//   id        Int      @id @default(autoincrement())
+//   email     String   @unique
+//   password  String
+//   role      String   // Can be 'ADMIN', 'CONVENOR', 'STUDENT'
+//   clubs     Club[]   @relation("ClubMembers")
+//   Club      Club[]   // Relation for convenor to clubs
+
+//   Application Application[]
+
+//   Registrations Registrations[]
+// }
+
+// model Club {
+//   id                Int      @id @default(autoincrement())
+//   name              String
+//   convenorId        Int      @unique
+//   convenor          User     @relation(fields: [convenorId], references: [id])
+//   info              String   // Additional club info
+//   announcements     Announcement[]
+//   recruitmentRounds RecruitmentRound[]
+  
+//   User User[] @relation("ClubMembers")
+
+//   Registrations Registrations[]
+// }
+
+// model Announcement {
+//   id        Int                 @id @default(autoincrement())
+//   clubId    Int
+//   content   String
+//   number    Int                 // Announcement number
+//   createdAt DateTime            @default(now())
+//   club      Club                @relation(fields: [clubId], references: [id])
+//   rounds    RecruitmentRound[]  // One-to-many relation with RecruitmentRound
+// }
+
+// model RecruitmentRound {
+//   id             Int        @id @default(autoincrement())
+//   announcementId Int        // Reference to the associated announcement
+//   roundNumber    Int
+//   details        String
+//   createdAt      DateTime   @default(now())
+//   announcement   Announcement @relation(fields: [announcementId], references: [id])
+
+//   Club Club[]
+
+//   Application Application[]
+// }
+
+// model Registrations{
+//   id        Int      @id @default(autoincrement())
+//   clubId    Int
+//   userId    Int
+//   status    String   // Can be 'PENDING', 'ACCEPTED', 'REJECTED'
+//   club      Club     @relation(fields: [clubId], references: [id])
+//   user      User     @relation(fields: [userId], references: [id])
+// }
+
+// model Application{
+//   id             Int        @id @default(autoincrement())
+//   roundId        Int
+//   userId         Int
+//   status         String     // Can be 'PENDING', 'ACCEPTED', 'REJECTED'
+//   round          RecruitmentRound @relation(fields: [roundId], references: [id])
+//   user           User            @relation(fields: [userId], references: [id])
+// }
+
+
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")  
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  password      String
+  name      String   @default("Unknown") 
+  role          String         // Can be 'ADMIN', 'CONVENOR', 'STUDENT'
+  clubs         Club[]         @relation("ClubMembers")
+  Club          Club[]         // Relation for convenor to clubs
+  Registrations Registration[]
+
+  ClubPreferenceForm ClubPreferenceForm[]
+}
+
+model Club {
+  id                Int              @id @default(autoincrement())
+  name              String
+  convenorId        Int              @unique
+  convenor          User             @relation(fields: [convenorId], references: [id])
+  info              String           // Additional club info
+  announcements     Announcement[]
+  recruitmentRounds RecruitmentRound[]
+  
+  User User[] @relation("ClubMembers")
+  Registrations Registration[]
+
+  ClubPreferenceForm ClubPreferenceForm[]
+}
+
+model Announcement {
+  id        Int                 @id @default(autoincrement())
+  clubId    Int
+  content   String
+  number    Int                 // Announcement number
+  createdAt DateTime            @default(now())
+  club      Club                @relation(fields: [clubId], references: [id])
+  rounds    RecruitmentRound[]  // One-to-many relation with RecruitmentRound
+
+  Registration Registration[]
+}
+
+model RecruitmentRound {
+  id             Int        @id @default(autoincrement())
+  announcementId Int        // Reference to the associated announcement
+  roundNumber    Int
+  details        String
+  createdAt      DateTime   @default(now())
+  announcement   Announcement @relation(fields: [announcementId], references: [id])
+
+  Club Club[]
+
+  RoundStatus RoundStatus[]
+}
+
+model Registration {
+  id              Int              @id @default(autoincrement())
+  clubId          Int             
+  userId          Int
+  announcementId  Int              // Link registration to an announcement
+  status          String           // Can be 'PENDING', 'ACCEPTED', 'REJECTED'
+  club            Club             @relation(fields: [clubId], references: [id])
+  user            User             @relation(fields: [userId], references: [id])
+  announcement    Announcement     @relation(fields: [announcementId], references: [id])
+  roundStatuses   RoundStatus[]    // Track the status of each round for this registration
+  
+}
+
+model RoundStatus {
+  id            Int              @id @default(autoincrement())
+  registrationId Int
+  roundId       Int
+  status        String           // Can be 'PENDING', 'PASSED', 'FAILED'
+  registration  Registration      @relation(fields: [registrationId], references: [id])
+  round         RecruitmentRound  @relation(fields: [roundId], references: [id])
+}
+
+model ClubPreferenceForm {
+  id        Int      @id @default(autoincrement())
+  userId    Int      // Reference to the user filling the form
+  clubId    Int      // Reference to the club the user is applying to
+  preference Int     // The user's preference ranking (e.g., 1 for highest, 2 for second, etc.)
+  
+  user      User     @relation(fields: [userId], references: [id])
+  club      Club     @relation(fields: [clubId], references: [id])
+
+  @@unique([userId, clubId])  // Ensure a user can only set preference for a club once
+}
