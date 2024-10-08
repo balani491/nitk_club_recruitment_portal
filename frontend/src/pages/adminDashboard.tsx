@@ -1,6 +1,7 @@
 import { Route, Routes, Link } from 'react-router-dom';
 import ViewClubs from './adminRoutes/viewClubs';
 import ManageUsers from './adminRoutes/manageUsers';
+import EnterAdmin from './adminRoutes/enterAdmin';
 
 const AdminDashboard = () => {
   return (
@@ -27,9 +28,9 @@ const AdminDashboard = () => {
         <Routes>
           {/* Default Route with a Welcome Message */}
           <Route
-            path=""
+            path="/*"
             element={
-              <AdminDashboard/>
+              <EnterAdmin/>
             }
           />
           <Route path="viewClubs" element={<ViewClubs />} />
