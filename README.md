@@ -1,5 +1,7 @@
 # NITK Club Recruitment Portal
 
+Screen Recording Portal : https://drive.google.com/file/d/1jUk3H_2skxLi5NRRYTvDDVanZhPfvwIg/view?usp=sharing
+
 The NITK Club Recruitment Portal is a web application designed to streamline the recruitment process for NITK clubs. The platform provides features such as club registration, announcements, preference forms, recruitment details, and more.
 
 ## Features
